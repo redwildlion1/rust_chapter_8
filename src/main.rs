@@ -41,4 +41,35 @@ fn main() {
         }
         mode
     }
+
+    //Convert strings to pig latin. The first consonant of each word is moved
+    // to the end of the word and “ay” is added, so “first” becomes “irst-fay.”
+    // Words that start with a vowel have “hay” added to the end instead
+    // (“apple” becomes “apple-hay”). Keep in mind the details about UTF-8
+    // encoding!
+    let string = "first apple";
+    let pig_latin = pig_latin(string);
+    println!("Pig Latin: {}", pig_latin);
+
+    fn pig_latin(string: &str) -> String{
+        let mut pig_latin = String::new();
+        for word in string.split_whitespace(){
+            let mut chars = word.chars();
+            let first_char = chars.next().unwrap();
+            if first_char == 'a' || first_char == 'e' || first_char == 'i' || first_char == 'o' || first_char == 'u'{
+                pig_latin.push_str(word);
+                pig_latin.push_str("-hay ");
+            }else{
+                let mut new_word = String::new();
+                for c in chars{
+                    new_word.push(c);
+                }
+                new_word.push('-');
+                new_word.push(first_char);
+                new_word.push_str("ay ");
+                pig_latin.push_str(&new_word);
+            }
+        }
+        pig_latin
+    }
 }
