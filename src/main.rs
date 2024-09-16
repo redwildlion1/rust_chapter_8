@@ -72,4 +72,49 @@ fn main() {
         }
         pig_latin
     }
+
+    // Using a hash map and vectors, create a text interface to allow a user to
+    // add employee names to a department in a company. For example, “Add Sally
+    // to Engineering” or “Add Amir to Sales.” Then let the user retrieve a list
+    // of all people in a department or all people in the company by department,
+    // sorted alphabetically.
+    let mut company: HashMap<String, Vec<String>> = HashMap::new();
+    let mut departments: Vec<String> = Vec::new();
+    loop{
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).unwrap();
+        let input = input.trim();
+        if input == "exit"{
+            break;
+        }
+        let input: Vec<&str> = input.split_whitespace().collect();
+        if input.len() == 4 && input[0] == "Add" && input[2] == "to"{
+            let name = input[1].to_string();
+            let department = input[3].to_string();
+            if !departments.contains(&department){
+                departments.push(department.clone());
+                departments.sort();
+            }
+            let employees = company.entry(department).or_insert(Vec::new());
+            employees.push(name);
+            employees.sort();
+        }else if input.len() == 3 && input[0] == "List" && input[1] == "all"{
+            let department = input[2];
+            if department == "departments"{
+                for department in &departments{
+                    println!("{}", department);
+                }
+            }else{
+                let employees = company.get(department);
+                match employees{
+                    Some(employees) => {
+                        for employee in employees{
+                            println!("{}", employee);
+                        }
+                    },
+                    None => println!("Department not found"),
+                }
+            }
+        }
+    }
 }
